@@ -1,15 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from './components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { Badge } from './components/ui/badge';
 import { Input } from './components/ui/input';
 import { Textarea } from './components/ui/textarea';
-import { Github, Linkedin, Mail, ExternalLink, MapPin, Calendar, Download } from 'lucide-react';
+import { Github, Linkedin, Mail, ExternalLink, MapPin, Calendar, Download, Send } from 'lucide-react';
 
 function App() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically send the form data to your backend
+    console.log('Form submitted:', formData);
+    alert('Thank you for your message! I\'ll get back to you soon.');
+    setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
   return (
@@ -372,26 +395,55 @@ function App() {
                 <CardTitle>Send a Message</CardTitle>
                 <CardDescription>I'll get back to you as soon as possible</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Name</label>
-                  <Input placeholder="Your name" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Email</label>
-                  <Input type="email" placeholder="your.email@example.com" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Subject</label>
-                  <Input placeholder="What's this about?" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Message</label>
-                  <Textarea placeholder="Tell me about your project or just say hello!" rows={4} />
-                </div>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                  Send Message
-                </Button>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">Name</label>
+                    <Input 
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Your name" 
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">Email</label>
+                    <Input 
+                      name="email"
+                      type="email" 
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="your.email@example.com" 
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">Subject</label>
+                    <Input 
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      placeholder="What's this about?" 
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">Message</label>
+                    <Textarea 
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      placeholder="Tell me about your project or just say hello!" 
+                      rows={4} 
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+                    <Send className="w-4 h-4 mr-2" />
+                    Send Message
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </div>
